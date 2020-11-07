@@ -1,8 +1,5 @@
-name: R2S-OpenWrt-Without-Docker
-
-env:
-  SSH_ACTIONS: false
-  TZ: Asia/Shanghai
+name: R2S-OpenWrt-Without-Docker 
+  
 on:
   push:
     branches: 
@@ -23,6 +20,8 @@ jobs:
     - name: Init build dependencies
       env:
         DEBIAN_FRONTEND: noninteractive
+        SSH_ACTIONS: false
+        TZ: Asia/Shanghai      
       run: |
         docker rmi $(docker images -q)
         sudo -E apt-get remove -y --purge azure-cli ghc zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* mysql* php*
@@ -75,10 +74,11 @@ jobs:
         mv ../SEED/config_docker.seed .config
         make defconfig
         chmod -R 755 ./
-        
     - name: SSH connection to Actions
-        uses: P3TERX/debugger-action@master
-        if: env.SSH_ACTIONS == 'true'
+    - uses: actions/checkout@v2
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+
         
     - name: Make Download
       run: |
