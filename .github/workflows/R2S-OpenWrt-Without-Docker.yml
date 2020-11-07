@@ -1,5 +1,8 @@
 name: R2S-OpenWrt-Without-Docker
 
+env:
+  SSH_ACTIONS: false
+  TZ: Asia/Shanghai
 on:
   push:
     branches: 
@@ -72,6 +75,11 @@ jobs:
         mv ../SEED/config_docker.seed .config
         make defconfig
         chmod -R 755 ./
+        
+    - name: SSH connection to Actions
+        uses: P3TERX/debugger-action@master
+        if: env.SSH_ACTIONS == 'true'
+        
     - name: Make Download
       run: |
         df -h
